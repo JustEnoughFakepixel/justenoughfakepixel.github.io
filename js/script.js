@@ -4,7 +4,10 @@ const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 const CREDITS = [
   { name: 'hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
-  { name: 'Internet Protocol(@.ipv6)', role: 'Contributor & maintainer', url: 'https://github.com/protocol-8' }
+  { name: 'Internet Protocol(@.ipv6)', role: 'Contributor & maintainer', url: 'https://github.com/protocol-8' },
+  { name: 'Whispering(@_.whispering)', role: 'Contributor', url: 'https://github.com/ginafro1' },
+    { name: 'Hooman(@mxhooman.)', role: 'Maintainer' }
+
 ];
 
 function mdToHtml(text) {
@@ -117,7 +120,7 @@ function renderCredits() {
         <div class="credit-name">${p.name}</div>
         <div class="credit-role">${p.role}</div>
       </div>
-      <a href="${p.url}" target="_blank">GitHub ↗</a>
+      ${p.url ? `<a href="${p.url}" target="_blank">GitHub ↗</a>` : '<span style="color:var(--border-light);font-size:11px;">—</span>'}
     </div>
   `).join('');
 }
@@ -144,11 +147,21 @@ async function loadLatestVersion() {
     const res = await fetch(RELEASES_API);
     if (!res.ok) return;
     const data = await res.json();
-    if (data.tag_name) {
-      document.getElementById('footer-version').textContent =
-        `JustEnoughFakepixel ${data.tag_name} — Forge 1.8.9`;
+    const meta = document.getElementById('download-meta');
+    if (data.tag_name && meta) {
+      // Try to get asset size
+      const asset = data.assets && data.assets.find(a => a.name.endsWith('.jar'));
+      const size = asset ? ` · ${(asset.size / 1024).toFixed(0)} KB` : '';
+      meta.textContent = `${data.tag_name} · Forge 1.8.9${size}`;
     }
-  } catch (_) {}
+    const footer = document.getElementById('footer-version');
+    if (data.tag_name && footer) {
+      footer.textContent = `· ${data.tag_name}`;
+    }
+  } catch (_) {
+    const meta = document.getElementById('download-meta');
+    if (meta) meta.textContent = 'Forge 1.8.9';
+  }
 }
 
 const observer = new IntersectionObserver(entries => {
