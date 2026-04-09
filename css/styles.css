@@ -125,8 +125,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 /* SECTIONS */
 .divider { border: none; border-top: 1px solid var(--border); }
 section { max-width: 900px; margin: 0 auto; padding: 5rem 2rem; }
-.section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,229,255,0.5); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 12px; }
+.section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,229,255,0.5); margin-bottom: 2.5rem; display: flex; align-items: center;
+gap: 12px; }
 .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,229,255,0.2), transparent); }
+.section-label-features { font-size: 21px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,229,255,0.5); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 12px; }
+.section-label-features::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,229,255,0.2), transparent); }
 
 /* FEATURES */
 .features-grid { columns: 3 280px; column-gap: 16px; }
