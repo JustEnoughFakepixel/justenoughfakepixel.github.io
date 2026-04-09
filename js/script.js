@@ -1,5 +1,5 @@
 const REPO = 'JustEnoughFakepixel/JustEnoughFakepixel';
-const FEATURES_API = "https://raw.githubusercontent.com/JustEnoughFakepixel/JustEnoughFakepixel/main/FEATURES.md";
+const FEATURES_API = `https://raw.githubusercontent.com/${REPO}/main/FEATURES.md`;
 const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 const CREDITS = [
@@ -7,12 +7,29 @@ const CREDITS = [
   { name: 'Internet Protocol(@.ipv6)', role: 'Contributor & maintainer', url: 'https://github.com/protocol-8' }
 ];
 
+function mdToHtml(text) {
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .trim();
+}
+
 function parseFeatures(md) {
   const lines = md.split('\n');
   const sections = {};
   let current = null;
+  let inCodeBlock = false;
 
   for (let line of lines) {
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
+    if (inCodeBlock) continue;
+
     line = line.trim();
     if (!line) continue;
 
@@ -28,12 +45,7 @@ function parseFeatures(md) {
     const listMatch = line.match(/^[-*+]\s+(.*)/);
     const content = listMatch ? listMatch[1] : line;
 
-    sections[current].push(
-      content
-        .replace(/!\[.*?\]\(.*?\)/g, '')
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-        .trim()
-    );
+    sections[current].push(mdToHtml(content));
   }
 
   return sections;
@@ -100,8 +112,8 @@ async function loadFeatures() {
   } catch (_) {
     document.getElementById('features-grid').innerHTML = `
       <div class="feature-card" style="grid-column:1/-1;color:var(--muted);font-size:12px;">
-        Could not load features — view them on 
-        <a href="https://github.com/JustEnoughFakepixel/JustEnoughFakepixel" style="color:var(--text);">GitHub</a>.
+        Could not load features — view them on
+        <a href="https://github.com/${REPO}" style="color:var(--text);">GitHub</a>.
       </div>
     `;
   }
