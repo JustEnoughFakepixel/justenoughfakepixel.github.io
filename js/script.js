@@ -24,10 +24,7 @@ function parseFeatures(md) {
   let inCodeBlock = false;
 
   for (let line of lines) {
-    if (line.trim().startsWith('```')) {
-      inCodeBlock = !inCodeBlock;
-      continue;
-    }
+    if (line.trim().startsWith('```')) { inCodeBlock = !inCodeBlock; continue; }
     if (inCodeBlock) continue;
 
     line = line.trim();
@@ -45,7 +42,16 @@ function parseFeatures(md) {
     const listMatch = line.match(/^[-*+]\s+(.*)/);
     const content = listMatch ? listMatch[1] : line;
 
-    sections[current].push(mdToHtml(content));
+    // split on — or - into title and description
+    const splitMatch = content.match(/^(.+?)\s*[—–-]{1,2}\s*(.+)$/);
+    if (splitMatch) {
+      sections[current].push({
+        title: mdToHtml(splitMatch[1].trim()),
+        desc: mdToHtml(splitMatch[2].trim())
+      });
+    } else {
+      sections[current].push({ title: mdToHtml(content), desc: null });
+    }
   }
 
   return sections;
@@ -53,9 +59,7 @@ function parseFeatures(md) {
 
 function chunkArray(arr, size) {
   const res = [];
-  for (let i = 0; i < arr.length; i += size) {
-    res.push(arr.slice(i, i + size));
-  }
+  for (let i = 0; i < arr.length; i += size) res.push(arr.slice(i, i + size));
   return res;
 }
 
@@ -74,17 +78,19 @@ function renderFeatures(sections) {
       const card = document.createElement('div');
       card.className = 'feature-card';
 
-      // split last word of title for accent color like Odin
       const words = (name + (index > 0 ? ` (${index + 1})` : '')).split(' ');
       const last = words.pop();
-      const title = words.length
-        ? `${words.join(' ')} <span>${last}</span>`
-        : `<span>${last}</span>`;
+      const title = words.length ? `${words.join(' ')} <span>${last}</span>` : `<span>${last}</span>`;
 
       card.innerHTML = `
         <div class="feature-card-label">${title}</div>
         <ul class="feature-list">
-          ${chunk.map(i => `<li>${i}</li>`).join('')}
+          ${chunk.map(item => `
+            <li class="feature-item${item.desc ? ' has-desc' : ''}">
+              <div class="feature-item-title">${item.title}</div>
+              ${item.desc ? `<div class="feature-item-desc">${item.desc}</div>` : ''}
+            </li>
+          `).join('')}
         </ul>
       `;
 
@@ -110,7 +116,6 @@ async function loadFeatures() {
   try {
     const res = await fetch(FEATURES_API);
     if (!res.ok) throw new Error();
-
     const text = await res.text();
     const sections = parseFeatures(text);
     renderFeatures(sections);
@@ -137,9 +142,7 @@ async function loadLatestVersion() {
 }
 
 const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
-  });
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
