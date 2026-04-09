@@ -74,10 +74,15 @@ function renderFeatures(sections) {
       const card = document.createElement('div');
       card.className = 'feature-card';
 
+      // split last word of title for accent color like Odin
+      const words = (name + (index > 0 ? ` (${index + 1})` : '')).split(' ');
+      const last = words.pop();
+      const title = words.length
+        ? `${words.join(' ')} <span>${last}</span>`
+        : `<span>${last}</span>`;
+
       card.innerHTML = `
-        <div class="feature-card-label">
-          ${name}${index > 0 ? ` (${index + 1})` : ''}
-        </div>
+        <div class="feature-card-label">${title}</div>
         <ul class="feature-list">
           ${chunk.map(i => `<li>${i}</li>`).join('')}
         </ul>
