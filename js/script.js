@@ -3,7 +3,7 @@ const FEATURES_API = `https://raw.githubusercontent.com/${REPO}/main/FEATURES.md
 const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 const CREDITS = [
-  { name: 'Hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
+  { name: 'hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
   { name: 'Internet Protocol(@.ipv6)', role: 'Contributor & maintainer', url: 'https://github.com/protocol-8' }
 ];
 
