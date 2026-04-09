@@ -6,7 +6,7 @@ const CREDITS = [
   { name: 'hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
   { name: 'Internet Protocol(@.ipv6)', role: 'Contributor & maintainer', url: 'https://github.com/protocol-8' },
   { name: 'Whispering(@_.whispering)', role: 'Contributor', url: 'https://github.com/ginafro1' },
-    { name: 'Hooman(@mxhooman.)', role: 'Maintainer' }
+    { name: 'Hooman(@mxhooman.)', role: 'Discord Maintainer' }
 
 ];
 
