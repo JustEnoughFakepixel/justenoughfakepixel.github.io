@@ -59,9 +59,6 @@ async function loadChangelogs() {
 
       let changelog = version.changelog || 'No changelog provided.';
 
-      // Remove title if present
-      changelog = changelog.replace(/^#\s+JEF\s+[\d\.\s\-]+Changelog\s*/i, '');
-
       // Use marked.js to parse markdown
       let parsedChangelog = '';
       if (typeof marked !== 'undefined') {
