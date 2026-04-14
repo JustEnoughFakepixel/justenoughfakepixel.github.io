@@ -453,6 +453,136 @@ section { max-width: 900px; margin: 0 auto; padding: 5rem 2rem; }
 .step-content a { color: rgba(0,229,255,0.8); text-decoration: underline; text-underline-offset: 3px; transition: color 0.15s; }
 .step-content a:hover { color: #00e5ff; }
 
+/* CHANGELOG */
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.changelog-item {
+  background: rgba(12, 12, 12, 0.6);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem 1.6rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.changelog-item:hover {
+  border-color: rgba(0, 229, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 229, 255, 0.1);
+}
+
+.changelog-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+}
+
+.changelog-date {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.changelog-body {
+  font-size: 13px;
+  color: #c5c5c5;
+  line-height: 1.8;
+}
+
+.changelog-body h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.25rem 0 0.75rem;
+}
+
+.changelog-body h3:first-child {
+  margin-top: 0;
+}
+
+.changelog-body h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1rem 0 0.5rem;
+}
+
+.changelog-body ul {
+  margin: 0.75rem 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.changelog-body li {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  color: #c5c5c5;
+  line-height: 1.6;
+}
+
+.changelog-body li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: rgba(0, 229, 255, 0.5);
+  font-weight: bold;
+}
+
+.changelog-body li:has(strong:first-child)::before {
+  content: '';
+}
+
+.changelog-body li strong {
+  color: #00e5ff;
+  font-weight: 600;
+}
+
+.changelog-body code {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 12px;
+  color: #b0b0b0;
+  font-family: var(--mono);
+}
+
+.changelog-body a {
+  color: rgba(0, 229, 255, 0.8);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.changelog-body a:hover {
+  color: #00e5ff;
+}
+
+.changelog-body p {
+  margin: 0.5rem 0;
+}
+
+.changelog-body p:first-child {
+  margin-top: 0;
+}
+
+.changelog-body p:last-child {
+  margin-bottom: 0;
+}
+
+.changelog-body hr {
+  border: none;
+  border-top: 1px solid rgba(0, 229, 255, 0.15);
+  margin: 1rem 0;
+}
+
 .credits-grid {
   display: flex;
   flex-direction: column;

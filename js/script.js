@@ -1,6 +1,8 @@
 const REPO = 'JustEnoughFakepixel/JustEnoughFakepixel';
 const FEATURES_API = `https://raw.githubusercontent.com/${REPO}/main/FEATURES.md`;
 const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
+const MODRINTH_PROJECT_ID = 'justenoughfakepixel';
+const MODRINTH_VERSIONS_API = `https://api.modrinth.com/v2/project/${MODRINTH_PROJECT_ID}/version`;
 
 const CREDITS = [
   { name: 'hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
@@ -149,6 +151,72 @@ async function loadLatestVersion() {
   }
 }
 
+async function loadChangelogs() {
+  try {
+    const res = await fetch(MODRINTH_VERSIONS_API);
+    if (!res.ok) throw new Error();
+    const versions = await res.json();
+
+    const changelogContainer = document.getElementById('changelog-list');
+    if (!changelogContainer) return;
+
+    // Get the latest 3 versions
+    const recentVersions = versions.slice(0, 3);
+
+    changelogContainer.innerHTML = recentVersions.map(version => {
+      const date = new Date(version.date_published).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      let changelog = version.changelog || 'No changelog provided.';
+
+      // Remove title if present
+      changelog = changelog.replace(/^#\s+JEF\s+[\d\.\s\-]+Changelog\s*/i, '');
+
+      // Use marked.js to parse markdown
+      let parsedChangelog = '';
+      if (typeof marked !== 'undefined') {
+        // Configure marked for better output
+        marked.setOptions({
+          breaks: true,
+          gfm: true
+        });
+        parsedChangelog = marked.parse(changelog);
+      } else {
+        // Fallback to basic parsing if marked isn't loaded
+        parsedChangelog = changelog
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/-{10,}/g, '<hr>')
+          .replace(/^- (.+)$/gm, '<li>$1</li>')
+          .replace(/(<li>.*?<\/li>\s*)+/gs, '<ul>$&</ul>');
+      }
+
+      return `
+        <div class="changelog-item">
+          <div class="changelog-header">
+            <div class="changelog-date">${date}</div>
+          </div>
+          <div class="changelog-body">${parsedChangelog}</div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (_) {
+    const changelogContainer = document.getElementById('changelog-list');
+    if (changelogContainer) {
+      changelogContainer.innerHTML = `
+        <div class="changelog-item" style="color:var(--muted);font-size:12px;">
+          Could not load changelogs — view them on
+          <a href="https://modrinth.com/mod/justenoughfakepixel/changelog" target="_blank" style="color:var(--text);">Modrinth</a>.
+        </div>
+      `;
+    }
+  }
+}
+
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
@@ -158,6 +226,7 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 loadFeatures();
 renderCredits();
 loadLatestVersion();
+loadChangelogs();
 document.addEventListener("click", (e) => {
   const label = e.target.closest(".feature-card-label");
   if (label) {
