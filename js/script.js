@@ -69,46 +69,32 @@ function renderFeatures(sections) {
     const card = document.createElement('div');
     card.className = 'feature-card';
 
-    const words = name.split(' ');
-    const last = words.pop();
-    const title = words.length
-      ? `${words.join(' ')} <span>${last}</span>`
-      : `<span>${last}</span>`;
+    const titleWords = name.split(' ').map(word => `<span>${word}</span>`).join(' ');
+    const title = `<div class="title-text">${titleWords}</div>`;
 
-    const listItems = items.map(item => `
-      <li class="feature-item${item.desc ? ' has-desc' : ''}">
-        <div class="feature-item-title">${item.title}</div>
-        ${item.desc ? `<div class="feature-item-desc">${item.desc}</div>` : ''}
-      </li>
-    `).join('');
+    const featureItems = items.map(item => {
+      const safeDesc = (item.desc || '').replace(/"/g, '&quot;');
+      const hasDesc = !!item.desc;
+      return `
+        <div class="feature-item">
+          <div class="feature-chip${hasDesc ? ' has-desc' : ''}" ${hasDesc ? `data-desc="${safeDesc}"` : ''}>${item.title}</div>
+        </div>
+      `;
+    }).join('');
 
     card.innerHTML = `
-      <div class="feature-card-label">${title}</div>
-      <div class="feature-list-wrap">
-        <ul class="feature-list">${listItems}</ul>
-        <div class="feature-fade"></div>
+      <div class="feature-card-label">
+        ${title}
+        <svg class="category-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
       </div>
+      <div class="feature-row">${featureItems}</div>
     `;
 
+    card.classList.add('collapsed');
+
     grid.appendChild(card);
-
-    const list = card.querySelector('.feature-list');
-    const fade = card.querySelector('.feature-fade');
-
-    const checkFade = () => {
-      const atBottom = list.scrollHeight - list.scrollTop <= list.clientHeight + 2;
-      fade.style.opacity = atBottom ? '0' : '1';
-    };
-
-    // run after paint so scrollHeight is accurate
-    requestAnimationFrame(() => {
-      if (list.scrollHeight <= list.clientHeight) {
-        fade.style.opacity = '0';
-      } else {
-        fade.style.opacity = '1';
-        list.addEventListener('scroll', checkFade);
-      }
-    });
   }
 }
 
@@ -149,7 +135,6 @@ async function loadLatestVersion() {
     const data = await res.json();
     const meta = document.getElementById('download-meta');
     if (data.tag_name && meta) {
-      // Try to get asset size
       const asset = data.assets && data.assets.find(a => a.name.endsWith('.jar'));
       const size = asset ? ` · ${(asset.size / 1024).toFixed(0)} KB` : '';
       meta.textContent = `${data.tag_name} · Forge 1.8.9${size}`;
@@ -173,3 +158,35 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 loadFeatures();
 renderCredits();
 loadLatestVersion();
+document.addEventListener("click", (e) => {
+  const label = e.target.closest(".feature-card-label");
+  if (label) {
+    const card = label.closest(".feature-card");
+    if (card) {
+      card.classList.toggle("collapsed");
+    }
+    return;
+  }
+
+  const chip = e.target.closest(".feature-chip");
+  if (!chip || !chip.classList.contains("has-desc")) return;
+
+  const item = chip.closest(".feature-item");
+  if (!item) return;
+
+  const existing = item.querySelector(".feature-desc-inline");
+  const isActive = chip.classList.contains("active");
+
+  if (existing) {
+    existing.remove();
+    chip.classList.remove("active");
+  }
+
+  if (!isActive) {
+    chip.classList.add("active");
+    const desc = document.createElement("div");
+    desc.className = "feature-desc-inline";
+    desc.innerHTML = chip.dataset.desc || "";
+    item.appendChild(desc);
+  }
+});
