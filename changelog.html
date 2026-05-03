@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Changelog - JustEnoughFakepixel</title>
-    <link href="css/styles.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
-          rel="stylesheet">
+    <link href="css/styles.css?v=2" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
 </head>
 <body>
 
-<nav>
-    <a class="nav-logo" href="index.html">JustEnoughFakepixel<span>^</span></a>
-    <ul class="nav-links">
+<canvas id="particle-canvas"></canvas>
+
+<nav class="main-nav">
+    <a class="nav-logo" href="index.html">JEF</a>
+    <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div class="menu-overlay">
+    <ul class="menu-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="features.html">Features</a></li>
         <li><a href="changelog.html">Changelog</a></li>
+        <li><a href="index.html#about">About</a></li>
         <li><a href="index.html#install">Installation</a></li>
         <li><a href="index.html#credits">Credits</a></li>
     </ul>
-</nav>
+</div>
 
 <div class="page-header">
     <h1>Changelog</h1>
@@ -95,6 +102,8 @@
 
     </div>
 </footer>
-<script src="js/changelog.js"></script>
+<script src="js/particles.js?v=2"></script>
+<script src="js/menu.js?v=2"></script>
+<script src="js/changelog.js?v=2"></script>
 </body>
 </html>

@@ -1,5 +1,44 @@
 const REPO = 'JustEnoughFakepixel/JustEnoughFakepixel';
 const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
+const README_API = `https://api.github.com/repos/${REPO}/contents/README.md`;
+
+async function loadPrivacy() {
+  const container = document.getElementById('privacy-text');
+  if (!container) return;
+
+  try {
+    const res = await fetch(README_API);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    // Properly decode base64 content as UTF-8
+    const raw = atob(data.content.replace(/\n/g, ''));
+    const bytes = new Uint8Array(raw.split('').map(c => c.charCodeAt(0)));
+    const text = new TextDecoder('utf-8').decode(bytes);
+
+    // Normalize line endings and extract IMPORTANT section
+    const normalized = text.replace(/\r\n/g, '\n');
+    const match = normalized.match(/^#+[^\n]*IMPORTANT[^\n]*\n([\s\S]*?)(?=^#)/m);
+    if (!match) throw new Error('Section not found');
+
+    const section = match[1].trim();
+
+    // Convert markdown to basic HTML
+    const html = section
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
+      .replace(/\n{2,}/g, '<br><br>')
+      .replace(/\n/g, ' ');
+
+    container.innerHTML = html;
+  } catch (err) {
+    console.error('loadPrivacy failed:', err);
+    container.innerHTML = `Could not load — view on <a href="https://github.com/${REPO}#-important" target="_blank" style="color:var(--text);">GitHub</a>.`;
+  }
+}
+
+
 
 const CREDITS = [
   { name: 'hamlook(@h4mlock)', role: 'Author', url: 'https://github.com/hamlook' },
@@ -79,3 +118,4 @@ heroElements.forEach(selector => {
 
 loadLatestVersion();
 renderCredits();
+loadPrivacy();
