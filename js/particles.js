@@ -4,7 +4,7 @@ class ParticleSystem {
     this.canvas = document.getElementById('particle-canvas');
     this.ctx = this.canvas.getContext('2d', { alpha: true });
     this.particles = [];
-    this.particleCount = 40; // Reduced from 80 for better performance
+    this.particleCount = 10;
     this.mouse = { x: null, y: null, radius: 120 };
     this.lastTime = 0;
     this.fps = 60;
