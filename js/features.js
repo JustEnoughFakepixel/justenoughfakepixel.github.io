@@ -1,5 +1,5 @@
 const REPO = 'JustEnoughFakepixel/JustEnoughFakepixel';
-const FEATURES_API = `https://raw.githubusercontent.com/${REPO}/main/FEATURES.md`;
+const FEATURES_API = `https://raw.githubusercontent.com/${REPO}/main/docs/FEATURES.md`;
 const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 function mdToHtml(text) {
